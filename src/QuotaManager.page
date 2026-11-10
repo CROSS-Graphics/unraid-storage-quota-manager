@@ -1,0 +1,17 @@
+Menu="Utilities"
+Title="Storage Quota Manager"
+Icon="hdd-o"
+Version="1.5.0"
+---
+<?php $sqmVar=parse_ini_file('/var/local/emhttp/var.ini'); ?>
+<link rel="stylesheet" href="/plugins/quota-manager/ui.css?v=1.5.0">
+<main id="sqm" data-token="<?=htmlspecialchars($sqmVar['csrf_token']??'',ENT_QUOTES)?>" data-server="<?=htmlspecialchars($sqmVar['NAME']??'NAS',ENT_QUOTES)?>">
+<?php include '/usr/local/emhttp/plugins/quota-manager/ui.html'; ?>
+</main>
+<script src="/plugins/quota-manager/ui.js?v=1.5.0"></script>
+
+
+
+
+
+

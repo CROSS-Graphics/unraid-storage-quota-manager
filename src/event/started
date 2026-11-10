@@ -1,0 +1,2 @@
+#!/bin/bash
+exec /usr/bin/php /usr/local/emhttp/plugins/quota-manager/cli.php start

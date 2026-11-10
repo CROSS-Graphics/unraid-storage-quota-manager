@@ -1,0 +1,25 @@
+<header class="sqm-toolbar"><div class="sqm-brand"><img src="/plugins/quota-manager/images/logo.png?v=1.0.1" width="64" height="64" alt=""><div><h2>Storage Quota Manager</h2><p>Private network storage with a fixed capacity.</p></div></div><button id="new-storage" type="button">Create Storage</button></header>
+<p id="sqm-message" role="status" aria-live="polite"></p>
+<div class="sqm-scroll"><table><caption class="sqm-sr">Managed storage images</caption><thead><tr><th>Storage</th><th>Location</th><th>Capacity</th><th>Used / Free</th><th>Users</th><th>Status</th><th>Actions</th></tr></thead><tbody id="storages"><tr><td colspan="7">Loading storages…</td></tr></tbody></table></div>
+<form id="storage-form" hidden>
+<h3 id="form-title">Create Storage</h3><p>The capacity reserves physical disk space. Filesystem metadata reduces usable space.</p>
+<div class="sqm-fields">
+<label>Storage Name<input name="name" required pattern="[A-Za-z][A-Za-z0-9_-]{0,39}" maxlength="40" placeholder="MyStorage"></label>
+<label>Storage Location<select name="location" required></select><small>Mounted local disks and pools, including external / USB. XFS, ext4 or Btrfs required.</small></label>
+<label id="custom-field" hidden>Custom Path<input name="custom" placeholder="/mnt/disk1/storage"></label>
+<label>Capacity<span class="sqm-capacity"><input name="capacity" type="number" min="1" max="100000" step="1" value="100" required><select name="unit" aria-label="Capacity unit"><option>GB</option><option>GiB</option></select></span></label>
+<label>Filesystem<select name="filesystem"><option value="ext4">ext4 (default)</option><option value="xfs">XFS</option><option value="btrfs">Btrfs</option></select><small>Inside the new image. Cannot be changed after creation.</small></label>
+<fieldset class="sqm-users"><legend>Authorized Users</legend><p>Select users and set their access. Unchecked users have no access.</p><div id="user-permissions" tabindex="0" aria-label="Users and permissions"></div><div class="sqm-user-footer"><span id="user-selection-summary" role="status" aria-live="polite"></span><button id="more-users" type="button" aria-expanded="false" aria-controls="user-permissions" hidden>More</button></div></fieldset>
+<label>Network Access<select name="access"><option value="private">Private — selected users only</option></select></label>
+<label class="sqm-check"><input name="auto" type="checkbox" checked>Auto Mount when the array starts</label>
+<label class="sqm-check" id="share-field" hidden><input name="share" type="checkbox" checked>Enable SMB share</label>
+</div><p>1 GB = 1,000,000,000 bytes · 1 GiB = 1,073,741,824 bytes</p>
+<div class="sqm-buttons"><button type="submit" id="save-storage">Create</button><button type="button" id="cancel-storage">Cancel</button></div>
+</form>
+<form id="resize-form" hidden>
+<h3>Increase Storage Capacity</h3><p>Files are retained. SMB connections will be closed during growth. Make a current backup first. Shrinking is prohibited.</p>
+<div class="sqm-fields"><label>Storage<input name="storage" readonly></label><label>New Total Capacity<input name="capacity" type="number" min="1" max="100000" step="1" required></label><label>Unit<select name="unit"><option>GB</option><option>GiB</option></select></label></div>
+<div class="sqm-buttons"><button type="submit">Increase Capacity</button><button type="button" id="cancel-resize">Cancel</button></div>
+</form>
+<details id="logs"><summary>View Logs</summary><button type="button" id="refresh-logs">Refresh logs</button><pre id="log-text">Open to load logs.</pre></details>
+<p class="sqm-footnote">v1.3 · ext4 / XFS / Btrfs images · No guest access · Increase capacity without formatting. Shrinking prohibited.</p>

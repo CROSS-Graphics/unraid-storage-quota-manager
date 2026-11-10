@@ -1,0 +1,3 @@
+#!/bin/bash
+# Failure is logged and leaves the busy loop mounted; never force unmount.
+exec /usr/bin/php /usr/local/emhttp/plugins/quota-manager/cli.php stop

@@ -1,0 +1,10 @@
+{
+  "name": "unraid-storage-quota-manager-tests",
+  "version": "1.5.0",
+  "private": true,
+  "license": "MIT",
+  "scripts": {
+    "test": "node tests/main-ui.cjs && node tests/users-ui.cjs"
+  },
+  "devDependencies": {"jsdom": "29.1.1"}
+}

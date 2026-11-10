@@ -1,0 +1,15 @@
+<?xml version='1.0' encoding='utf-8'?>
+<Plugin>
+  <Name>Storage Quota Manager</Name>
+  <PluginURL>https://raw.githubusercontent.com/CROSS-Graphics/unraid-storage-quota-manager/main/dist/quota-manager.plg</PluginURL>
+  <Project>https://github.com/CROSS-Graphics/unraid-storage-quota-manager</Project>
+  <Support>https://github.com/CROSS-Graphics/unraid-storage-quota-manager/issues</Support>
+  <Icon>https://raw.githubusercontent.com/CROSS-Graphics/unraid-storage-quota-manager/main/src/images/logo.png</Icon>
+  <ReadMe>https://raw.githubusercontent.com/CROSS-Graphics/unraid-storage-quota-manager/main/README.md</ReadMe>
+  <Overview>Create fixed-capacity filesystem images and private SMB shares using existing Unraid accounts. Includes per-user Read/ReadWrite access, a Main overview, mount/unmount and growth-only resize. Initial public beta based on maintainer-tested 1.5.0; review known loop lifecycle limitations before use. Back up data. No NTFS/exFAT support.</Overview>
+  <Category>Tools:Utilities</Category>
+  <Beta>true</Beta>
+  <License>MIT</License>
+  <MinVer>7.0.0</MinVer>
+  <MaxVer>7.99.99</MaxVer>
+</Plugin>

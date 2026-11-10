@@ -1,0 +1,14 @@
+Menu="Main:1z"
+Title="Storage Quota Manager 1.5.0"
+Tag="hdd-o"
+Version="1.5.0"
+---
+<?php $sqmMainVar=parse_ini_file('/var/local/emhttp/var.ini'); ?>
+<link rel="stylesheet" href="/plugins/quota-manager/main.css?v=1.5.0">
+<section id="sqm-main" data-token="<?=htmlspecialchars($sqmMainVar['csrf_token']??'',ENT_QUOTES)?>" aria-label="Virtual Storage Disks">
+<div class="title sqm-main-title"><span>Storage Quota Manager 1.5.0</span><span class="sqm-main-tools"><a id="sqm-main-update" href="/Plugins" title="Plugin update available" aria-label="Plugin update available" hidden><i class="fa fa-arrow-circle-up" aria-hidden="true"></i></a><a href="/Settings/QuotaManager#create" title="Add new virtual disk" aria-label="Add new virtual disk"><i class="fa fa-plus" aria-hidden="true"></i></a><button type="button" id="sqm-main-refresh" title="Refresh virtual disks" aria-label="Refresh virtual disks"><i class="fa fa-refresh" aria-hidden="true"></i></button><a href="/Settings/QuotaManager" title="Manage virtual disks" aria-label="Manage virtual disks"><i class="fa fa-cog" aria-hidden="true"></i></a></span></div>
+<p id="sqm-main-message" role="status" aria-live="polite"></p>
+<div class="sqm-main-scroll"><table><caption class="sqm-main-sr">Virtual disks managed by Storage Quota Manager</caption><thead><tr><th>Virtual Disk</th><th>Location</th><th>Filesystem</th><th>Status</th><th>Size</th><th>Used</th><th>Free</th><th>Mount / Unmount</th></tr></thead><tbody id="sqm-main-disks"><tr><td colspan="8">Loading virtual disks…</td></tr></tbody></table></div>
+</section>
+<script src="/plugins/quota-manager/main.js?v=1.5.0"></script>
+

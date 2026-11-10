@@ -1,0 +1,13 @@
+{
+  "name": "unraid-storage-quota-manager",
+  "author": "CROSS Graphics",
+  "app_version": "1.5.0",
+  "plugin_version": "2026.11.10",
+  "repository_url": "https://github.com/CROSS-Graphics/unraid-storage-quota-manager",
+  "license": "MIT",
+  "license_confirmed": true,
+  "channel": "beta",
+  "baseline": "Maintainer-selected 1.5.0",
+  "github_owner": "CROSS-Graphics",
+  "repository_name": "unraid-storage-quota-manager"
+}

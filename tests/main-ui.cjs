@@ -1,0 +1,45 @@
+/* DOM integration tests, no actual server/storage calls. Requires jsdom in NODE_PATH. */
+const {JSDOM}=require('jsdom');
+const fs=require('node:fs'),path=require('node:path'),assert=require('node:assert/strict');
+const source=fs.readFileSync(path.join(__dirname,'../src/main.js'),'utf8');
+const fixture=`<div class="title">Storage Quota Manager 1.4.1<span class="right"></span></div><link><section id="sqm-main" data-token="test-token"><div class="sqm-main-title"><span>Duplicate title</span><span class="sqm-main-tools"><a id="sqm-main-update" hidden href="/Plugins">Update</a><button id="sqm-main-refresh">Refresh</button></span></div><p id="sqm-main-message"></p><table><tbody id="sqm-main-disks"></tbody></table></section>`;
+const tick=()=>new Promise(resolve=>setImmediate(resolve));
+(async()=>{
+ const dom=new JSDOM(fixture,{url:'http://localhost/Main',runScripts:'outside-only'}),w=dom.window;
+ const calls=[];let confirm=false,fail=false,update={available:false};
+ const disks=[{name:'PTO',location:'/mnt/disk1',filesystem:'ext4',phase:'ready',status:'Online',bytes:100e9,used:20e9,available:78e9},{name:'USB',location:'/mnt/disks/Backup',filesystem:'xfs',phase:'ready',status:'Offline',bytes:50e9,used:null,available:null}];
+ w.confirm=()=>confirm;
+ w.fetch=async(url,options)=>{
+   const action=options.body.get('action');calls.push({url,action,token:options.body.get('sqm_csrf_token'),data:JSON.parse(options.body.get('data'))});
+   if(fail)throw Error('Simulated network failure');
+   if(action==='unmount')disks[0].status='Offline';
+   if(action==='mount')disks[1].status='Online';
+   return {ok:true,json:async()=>({ok:true,result:action==='status'?{storages:disks,update}:{ok:true}})};
+ };
+ w.eval(source);await tick();await tick();
+ assert.equal(w.document.querySelectorAll('#sqm-main-disks tr').length,2);
+ assert.match(w.document.querySelector('#sqm-main-disks').textContent,/20.00 GB/);
+ assert.equal(w.document.querySelector('button[aria-label="Unmount PTO"]').textContent,'Unmount');
+ assert.equal(w.document.querySelector('button[aria-label="Mount USB"]').textContent,'Mount');
+ assert.equal(calls[0].token,'test-token');
+ assert.equal(w.document.querySelectorAll('.sqm-main-title').length,0,'No duplicate header');
+ assert.ok(w.document.querySelector('.sqm-native-title #sqm-main-refresh'));
+ assert.equal(w.document.querySelector('#sqm-main-update').hidden,true);
+ update={available:true,version:'2026.11.01'};w.document.querySelector('#sqm-main-refresh').click();await tick();await tick();
+ assert.equal(w.document.querySelector('#sqm-main-update').hidden,false);
+ update={available:false};w.document.querySelector('#sqm-main-refresh').click();await tick();await tick();
+ assert.equal(w.document.querySelector('#sqm-main-update').hidden,true);
+ w.document.querySelector('button[aria-label="Unmount PTO"]').click();await tick();
+ assert.equal(calls.filter(c=>c.action==='unmount').length,0,'Cancel must not mutate');
+ confirm=true;w.document.querySelector('button[aria-label="Unmount PTO"]').click();await tick();await tick();
+ assert.equal(calls.filter(c=>c.action==='unmount').length,1);
+ assert.ok(w.document.querySelector('button[aria-label="Mount PTO"]'));
+ w.document.querySelector('button[aria-label="Mount USB"]').click();await tick();await tick();
+ assert.ok(w.document.querySelector('button[aria-label="Unmount USB"]'));
+ fail=true;w.document.querySelector('#sqm-main-refresh').click();await tick();await tick();
+ assert.match(w.document.querySelector('#sqm-main-message').textContent,/out of date/);
+ assert.equal(w.document.querySelectorAll('#sqm-main-disks tr').length,2,'Keep previous rows on network error');
+ const nativePage=fs.readFileSync(path.join(__dirname,'../src/QuotaManagerMain.page'),'utf8');
+ assert.match(nativePage,/Menu="Main:1z"/);assert.match(nativePage,/href="\/Settings\/QuotaManager#create"/);
+ w.close();console.log('PASS Main DOM: rows, usage, mount/unmount, cancel, CSRF copy, refresh failure, native Main registration and add link');
+})().catch(error=>{console.error(error);process.exit(1);});

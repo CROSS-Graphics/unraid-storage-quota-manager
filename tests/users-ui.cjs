@@ -1,0 +1,27 @@
+const {JSDOM}=require('jsdom');
+const fs=require('node:fs'),path=require('node:path'),assert=require('node:assert/strict');
+const tick=()=>new Promise(resolve=>setImmediate(resolve));
+(async()=>{
+ const html=fs.readFileSync(path.join(__dirname,'../src/ui.html'),'utf8');
+ const dom=new JSDOM(`<main id="sqm" data-token="test" data-server="NAS">${html}</main>`,{url:'http://localhost/Settings/QuotaManager',runScripts:'outside-only'}),w=dom.window;
+ w.HTMLElement.prototype.scrollIntoView=function(){};
+ const users=Array.from({length:15},(_,i)=>`user${String(i+1).padStart(2,'0')}`);let submitted;
+ w.fetch=async(url,opts)=>{const action=opts.body.get('action');if(action==='create')submitted=JSON.parse(opts.body.get('data'));return {json:async()=>({ok:true,result:action==='status'?{users,locations:['/mnt/disk1'],storages:[]}:{ok:true}})};};
+ w.eval(fs.readFileSync(path.join(__dirname,'../src/ui.js'),'utf8'));await tick();await tick();
+ w.document.querySelector('#new-storage').click();
+ const rows=[...w.document.querySelectorAll('.sqm-user-row')];
+ assert.equal(rows.length,15);assert.equal(rows.filter(r=>!r.hidden).length,10);
+ assert.equal(rows[0].querySelector('input').value,'user15');
+ assert.equal(rows.filter(r=>r.querySelector('input').checked).length,0,'Never auto-select users');
+ rows[0].querySelector('input').click();rows[0].querySelector('select').value='rw';
+ w.document.querySelector('#more-users').click();assert.equal(rows.filter(r=>!r.hidden).length,15);
+ rows[12].querySelector('input').click();rows[12].querySelector('select').value='read';
+ w.document.querySelector('#more-users').click();assert.ok(rows[12].hidden);assert.ok(rows[12].querySelector('input').checked);
+ assert.match(w.document.querySelector('#user-selection-summary').textContent,/2 selected.*1 in More/);
+ w.document.querySelector('[name="name"]').value='Alpha';
+ w.document.querySelector('#storage-form').dispatchEvent(new w.Event('submit',{cancelable:true}));await tick();await tick();
+ assert.deepEqual(submitted.users,['user15','user03']);
+ assert.deepEqual(submitted.permissions,{user15:'rw',user03:'read'});
+ assert.equal(Object.keys(submitted.permissions).length,2,'Unselected users are never submitted');
+ w.close();console.log('PASS Users DOM: first 10, More/Less, persistent selections, permission values and checked-only payload');
+})().catch(error=>{console.error(error);process.exit(1);});

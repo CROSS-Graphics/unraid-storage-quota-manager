@@ -1,0 +1,3 @@
+#!/bin/bash
+# Retry after other services have released files.
+exec /usr/bin/php /usr/local/emhttp/plugins/quota-manager/cli.php stop

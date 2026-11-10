@@ -1,0 +1,6 @@
+<?xml version='1.0' encoding='utf-8'?>
+<CommunityApplications>
+  <Profile>CROSS Graphics maintains Storage Quota Manager, an independent Unraid plugin for fixed-capacity private SMB storage. Use the project issue tracker for support.</Profile>
+  <Icon>https://raw.githubusercontent.com/CROSS-Graphics/unraid-storage-quota-manager/main/src/images/logo.png</Icon>
+  <WebPage>https://github.com/CROSS-Graphics/unraid-storage-quota-manager</WebPage>
+</CommunityApplications>
