@@ -39,7 +39,7 @@ for tag, value in {
     'Name': 'Storage Quota Manager', 'PluginURL': raw + '/dist/quota-manager.plg',
     'Project': project, 'Support': project + '/issues',
     'Icon': raw + '/src/images/logo.png', 'ReadMe': raw + '/README.md',
-    'Overview': 'Create fixed-capacity filesystem images and private SMB shares using existing Unraid accounts. Includes per-user Read/ReadWrite access, a Main overview, mount/unmount and growth-only resize. Initial public beta based on maintainer-tested 1.5.0; review known loop lifecycle limitations before use. Back up data. No NTFS/exFAT support.',
+    'Overview': 'Create fixed-size private network drives on your Unraid server. Each drive is a filesystem image (ext4, XFS or Btrfs) on an existing array disk or pool, shared over SMB only with the Unraid users you choose, with Read or Read/Write access per user. The size is a hard limit, so one share can never fill the whole disk. Create and manage drives in Settings, see capacity and usage on the Main tab, mount or unmount with one click, and grow a drive later without reformatting. Beta: keep backups of important data.',
     'Category': 'Tools:Utilities', 'Beta': 'true', 'License': 'MIT',
     'MinVer': '7.0.0', 'MaxVer': '7.99.99',
 }.items():
